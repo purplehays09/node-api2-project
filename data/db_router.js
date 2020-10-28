@@ -64,10 +64,28 @@ router.get('/api/posts/:id/comments',(req,res) => {
 
 //POST Endpoints
 // POST	/api/posts	Creates a post using the information sent inside the request body.
+router.post('/api/posts', (req,res) => {
+    const payload = req.body
 
+    if(!payload.title || !payload.contents){
+        res.status(401).json({
+            errorMessage: "Please provide title and contents for the post." 
+        })
+    }else{
+        db.insert(payload)
+        .then(data => {
+            res.status(201).json(data);
+        })
+        .catch(error => {
+            res.status(500).json({
+                error: "There was an error while saving the post to the database" 
+            })
+        })
+    }
+})
 
 // POST	/api/posts/:id/comments	Creates a comment for the post with the specified id using information sent inside of the request body.
-
+router.post('/api/posts/:id')
 
 //PUT Endpoints
 // PUT	/api/posts/:id	Updates the post with the specified id using data from the request body. Returns the modified document, NOT the original.
